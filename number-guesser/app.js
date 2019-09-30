@@ -14,7 +14,7 @@ let min = 1,
 	guessesLeft = 3;
 
 // * UI elements
-const game = document.querySelector('#game'),
+const gameWrapper = document.querySelector('#game'),
 	minNum = document.querySelector('.min-num'),
 	maxNum = document.querySelector('.max-num'),
 	gusessBtn = document.querySelector('#guess-btn'),
@@ -24,6 +24,13 @@ const game = document.querySelector('#game'),
 // Assign UI min and max
 minNum.textContent = min;
 maxNum.textContent = max;
+
+// play again event listener
+gameWrapper.addEventListener('mousedown', (e) => {
+	if (e.target.classList.contains('play-again')) {
+		window.location.reload();
+	}
+});
 
 // listen for guess
 gusessBtn.addEventListener('click', () => {
@@ -43,7 +50,6 @@ gusessBtn.addEventListener('click', () => {
 
 		if (guessesLeft === 0) {
 			// Game over - lost
-			gusessBtn.disabled = true;
 			gameOver(false, `Game Over, you lost. The correct number was ${winningNum}`);
 		} else {
 			// game continues - answer wrong
@@ -66,6 +72,10 @@ const gameOver = (won, msg) => {
 	guessInput.style.borderColor = color;
 	// set message
 	setMessage(msg, color);
+
+	// play agin
+	gusessBtn.value = 'Play Again';
+	gusessBtn.className += 'play-again';
 };
 
 // set message
