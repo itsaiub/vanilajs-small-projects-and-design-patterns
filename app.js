@@ -13,6 +13,8 @@ const loadEventListeners = () => {
 	taskList.addEventListener('click', removeTask);
 	// clear all task event
 	clearBtn.addEventListener('click', clearTasks);
+	// filter task event
+	filter.addEventListener('keyup', filterTask);
 };
 
 // Add Task
@@ -62,4 +64,18 @@ const clearTasks = (e) => {
 	}
 };
 
+// Filter task
+const filterTask = (e) => {
+	const text = e.target.value.toLowerCase();
+	const tasks = document.querySelectorAll('.collection-item');
+
+	tasks.forEach((task) => {
+		const item = task.firstChild.textContent;
+		if (item.toLowerCase().indexOf(text) !== -1) {
+			task.style.display = 'block';
+		} else {
+			task.style.display = 'none';
+		}
+	});
+};
 loadEventListeners();
