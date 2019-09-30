@@ -28,7 +28,6 @@ maxNum.textContent = max;
 // listen for guess
 gusessBtn.addEventListener('click', () => {
 	let guess = parseInt(guessInput.value);
-
 	// validate
 	if (isNaN(guess) || guess < min || guess > max) {
 		setMessage(`Please enter a number between ${min} and ${max}`, 'red');
@@ -36,15 +35,38 @@ gusessBtn.addEventListener('click', () => {
 
 	// check if won
 	if (guess === winningNum) {
-		// disable input
-		guessInput.disabled = true;
-		// change border color
-		guessInput.style.borderColor = 'green';
-		// set message
-		setMessage(`${winningNum} is correct, YOU WIN!`, 'green');
+		// game over - won
+		gameOver(true, `${winningNum} is correct, YOU WIN!`);
 	} else {
+		// wrong number
+		guessesLeft -= 1;
+
+		if (guessesLeft === 0) {
+			// Game over - lost
+			gusessBtn.disabled = true;
+			gameOver(false, `Game Over, you lost. The correct number was ${winningNum}`);
+		} else {
+			// game continues - answer wrong
+			// change border color
+			guessInput.style.borderColor = 'red';
+			guessInput.value = '';
+
+			// set message
+			setMessage(`${guess} is not correct, ${guessesLeft} guesses left.`, 'red');
+		}
 	}
 });
+
+// game over
+const gameOver = (won, msg) => {
+	let color = won === true ? 'green' : 'red';
+	// disable input
+	guessInput.disabled = true;
+	// change border color
+	guessInput.style.borderColor = color;
+	// set message
+	setMessage(msg, color);
+};
 
 // set message
 const setMessage = (msg, color) => {
