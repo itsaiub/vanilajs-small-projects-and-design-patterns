@@ -14,8 +14,8 @@ function Book(title, author, isbn) {
 // * UI Constructor
 function UI() {}
 
+// add book to the list
 UI.prototype.addBookToList = function(book) {
-	console.log(book);
 	// create tr element
 	const row = document.createElement('tr');
 	// insert cols
@@ -28,12 +28,14 @@ UI.prototype.addBookToList = function(book) {
 	bookList.appendChild(row);
 };
 
+// clear fields
 UI.prototype.clearFields = function() {
 	title.value = '';
 	author.value = '';
 	isbn.value = '';
 };
 
+// show alert message
 UI.prototype.showAlert = function(msg, className) {
 	// create div
 	const div = document.createElement('div');
@@ -55,7 +57,14 @@ UI.prototype.showAlert = function(msg, className) {
 	}, 3000);
 };
 
-// ? Event Listeners
+// delete book from list
+UI.prototype.deleteBook = function(target) {
+	if (target.classList.contains('delete')) {
+		target.parentElement.parentElement.remove();
+	}
+};
+
+// TODO: Event Listener for add Book
 bookForm.addEventListener('submit', (e) => {
 	// Instantiate book
 	const book = new Book(title.value, author.value, isbn.value);
@@ -77,6 +86,20 @@ bookForm.addEventListener('submit', (e) => {
 		// clear input box
 		ui.clearFields();
 	}
+
+	e.preventDefault();
+});
+
+// TODO: Event Listener for delete
+bookList.addEventListener('click', (e) => {
+	// instantiate
+	const ui = new UI();
+
+	// delete book
+	ui.deleteBook(e.target);
+
+	// show message
+	ui.showAlert('Book Removed', 'success');
 
 	e.preventDefault();
 });
