@@ -6,7 +6,7 @@ const monthlyPayment = document.querySelector('#monthly-payment');
 const totalPayment = document.querySelector('#total-payment');
 const totalInterest = document.querySelector('#total-interest');
 
-const calculateResults = (e) => {
+const calculateResults = () => {
 	const principal = parseFloat(amount.value);
 	const calculatedInterest = parseFloat(interest.value) / 100 / 12;
 	const calculatedPayment = parseFloat(years.value) * 12;
@@ -21,14 +21,21 @@ const calculateResults = (e) => {
 		monthlyPayment.value = monthly.toFixed(2);
 		totalPayment.value = (monthly * calculatedPayment).toFixed(2);
 		totalInterest.value = (monthly * calculatedPayment - principal).toFixed(2);
+
+		// show results
+		document.getElementById('results').style.display = 'block';
+		// hide loader
+		document.getElementById('loading').style.display = 'none';
 	} else {
 		showError('Please check your numbers..');
 	}
-
-	e.preventDefault();
 };
 
 const showError = (error) => {
+	// hide results
+	document.getElementById('results').style.display = 'none';
+	// hide loader
+	document.getElementById('loading').style.display = 'none';
 	// create div
 	const errorDiv = document.createElement('div');
 
@@ -53,4 +60,14 @@ const clearError = () => {
 	document.querySelector('.alert').remove();
 };
 
-loanForm.addEventListener('submit', calculateResults);
+// ? Listen for submit
+loanForm.addEventListener('submit', (e) => {
+	// hide results
+	document.getElementById('results').style.display = 'none';
+	// show loader
+	document.getElementById('loading').style.display = 'block';
+
+	setTimeout(calculateResults, 2000);
+
+	e.preventDefault();
+});
