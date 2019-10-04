@@ -3,8 +3,9 @@ const StorageCtrl = (function() {
 	// public methods
 	return {
 		storeItem: (item) => {
-			let items = [];
+			let items;
 			if (localStorage.getItem('items') === null) {
+				items = [];
 				items.push(item);
 				localStorage.setItem('items', JSON.stringify(items));
 			} else {
@@ -12,6 +13,15 @@ const StorageCtrl = (function() {
 				items.push(item);
 				localStorage.setItem('items', JSON.stringify(items));
 			}
+		},
+		getItemsFromStorage: () => {
+			let items;
+			if (localStorage.getItem('items') === null) {
+				items = [];
+			} else {
+				items = JSON.parse(localStorage.getItem('items'));
+			}
+			return items;
 		}
 	};
 })();
@@ -27,11 +37,7 @@ const ItemCtrl = (function() {
 
 	// Data Structure / State
 	const data = {
-		items: [
-			// { id: 0, name: 'Eggs', calories: 300 },
-			// { id: 1, name: 'Chicken', calories: 500 },
-			// { id: 2, name: 'Meat', calories: 400 }
-		],
+		items: StorageCtrl.getItemsFromStorage(),
 		currentItem: null,
 		totalCalories: 0
 	};
