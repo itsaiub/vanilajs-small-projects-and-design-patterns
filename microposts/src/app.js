@@ -12,6 +12,9 @@ document.querySelector('.post-submit').addEventListener('click', submitPost);
 // listen for delete
 document.querySelector('#posts').addEventListener('click', deletePost);
 
+// listen for edit state
+document.querySelector('#posts').addEventListener('click', enableEdit);
+
 // Get Post
 function getPosts() {
 	http.get(API_URL)
@@ -57,7 +60,24 @@ function deletePost(e) {
 					ui.showAlert('Error to post delete.', 'alert alert-danger');
 				});
 		}
-		console.log(id);
+	}
+	e.preventDefault();
+}
+
+// Enable Edit State
+function enableEdit(e) {
+	if (e.target.parentElement.classList.contains('edit')) {
+		const id = e.target.parentElement.dataset.id;
+		const title = e.target.parentElement.previousElementSibling.previousElementSibling.textContent;
+		const body = e.target.parentElement.previousElementSibling.textContent;
+
+		const data = {
+			id,
+			title,
+			body
+		};
+
+		ui.fillForm(data);
 	}
 	e.preventDefault();
 }

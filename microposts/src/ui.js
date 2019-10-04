@@ -55,6 +55,12 @@ class UI {
 		this.titleEl.value = '';
 		this.bodyEl.value = '';
 	}
+
+	fillForm(data) {
+		this.titleEl.value = data.title;
+		this.bodyEl.value = data.body;
+		this.idEl.value = data.id;
+	}
 }
 
 export const ui = new UI();
