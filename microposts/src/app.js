@@ -15,6 +15,9 @@ document.querySelector('#posts').addEventListener('click', deletePost);
 // listen for edit state
 document.querySelector('#posts').addEventListener('click', enableEdit);
 
+// listen for cancel
+document.querySelector('.card-form').addEventListener('click', cancelEdit);
+
 // Get Post
 function getPosts() {
 	http.get(API_URL)
@@ -30,19 +33,33 @@ function getPosts() {
 function submitPost() {
 	const title = document.querySelector('#title').value.trim();
 	const body = document.querySelector('#body').value.trim();
+	const id = document.querySelector('#id').value;
 
 	const data = { title, body };
 
-	if (title !== '' && body !== '') {
-		http.post(API_URL, data)
-			.then((data) => {
-				ui.showAlert('Post Added', 'alert alert-success');
-				ui.clearFields();
-				getPosts();
-			})
-			.catch((err) => console.log(err));
+	if (title !== '' || body !== '') {
+		// check for id
+		if (id === '') {
+			// Create post
+			http.post(API_URL, data)
+				.then((data) => {
+					ui.showAlert('Post Added', 'alert alert-success');
+					ui.clearFields();
+					getPosts();
+				})
+				.catch((err) => console.log(err));
+		} else {
+			// Update post
+			http.put(`${API_URL}/${id}`, data)
+				.then((data) => {
+					ui.showAlert('Post Updated', 'alert alert-success');
+					ui.changeFormState('add');
+					getPosts();
+				})
+				.catch((err) => console.log(err));
+		}
 	} else {
-		ui.showAlert("Post or Title shouldn't be empty.", 'alert alert-danger');
+		ui.showAlert('Please fill in all fields.', 'alert alert-danger');
 	}
 }
 
@@ -78,6 +95,14 @@ function enableEdit(e) {
 		};
 
 		ui.fillForm(data);
+	}
+	e.preventDefault();
+}
+
+// cancel edit state
+function cancelEdit(e) {
+	if (e.target.classList.contains('post-cancel')) {
+		ui.changeFormState('add');
 	}
 	e.preventDefault();
 }

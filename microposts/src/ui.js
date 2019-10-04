@@ -60,6 +60,40 @@ class UI {
 		this.titleEl.value = data.title;
 		this.bodyEl.value = data.body;
 		this.idEl.value = data.id;
+
+		this.changeFormState('edit');
+	}
+
+	// clear id hidden value
+	clearIdInput() {
+		this.idEl.value = '';
+	}
+
+	changeFormState(type) {
+		if (type === 'edit') {
+			if (document.querySelector('.post-cancel')) {
+				document.querySelector('.post-cancel').remove();
+			}
+			this.submitBtn.textContent = 'Update Post';
+			this.submitBtn.className = 'post-submit btn btn-warning btn-block';
+			// Create Cancel button
+			const button = document.createElement('button');
+			button.className = 'post-cancel btn btn-light btn-block';
+			button.appendChild(document.createTextNode('Cancel Edit'));
+			// Get parent
+			const cardForm = document.querySelector('.card-form');
+			// get element to insert before
+			const formEnd = document.querySelector('.form-end');
+			// insert cancel button
+			cardForm.insertBefore(button, formEnd);
+		} else {
+			this.submitBtn.textContent = 'Post It';
+			this.submitBtn.className = 'post-submit btn btn-primary btn-block';
+			// remove cancel button
+			if (document.querySelector('.post-cancel')) document.querySelector('.post-cancel').remove();
+			this.clearIdInput();
+			this.clearFields();
+		}
 	}
 }
 
