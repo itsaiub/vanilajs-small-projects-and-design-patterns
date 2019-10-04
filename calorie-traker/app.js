@@ -55,6 +55,7 @@ const ItemCtrl = (function() {
 			});
 			return found;
 		},
+
 		updateItem: (name, calories) => {
 			calories = parseInt(calories);
 			let found = null;
@@ -67,6 +68,19 @@ const ItemCtrl = (function() {
 			});
 			return found;
 		},
+
+		deleteItem: (id) => {
+			// get ids
+			ids = data.items.map((item) => {
+				return item.id;
+			});
+			// get index
+			const index = ids.indexOf(id);
+
+			// remove item
+			data.items.splice(index, 1);
+		},
+
 		setCurrentItem: (item) => {
 			data.currentItem = item;
 		},
@@ -163,12 +177,18 @@ const UICtrl = (function() {
 				}
 			});
 		},
+
+		deleteListItem: (id) => {
+			const itemId = `#item-${id}`;
+			const item = document.querySelector(itemId);
+			item.remove();
+		},
+
 		clearInput: () => {
 			document.querySelector(UISelectors.itemName).value = '';
 			document.querySelector(UISelectors.itemCalories).value = '';
 		},
 		addItemToForm: () => {
-			console.log(ItemCtrl.getCurrentItem().name);
 			document.querySelector(UISelectors.itemName).value = ItemCtrl.getCurrentItem().name;
 			document.querySelector(UISelectors.itemCalories).value = ItemCtrl.getCurrentItem().calories;
 			UICtrl.showEditState();
@@ -220,6 +240,12 @@ const AppCtrl = (function(ItemCtrl, UICtrl) {
 
 		// Update item event
 		document.querySelector(UISelectors.updateBtn).addEventListener('click', itemUpdateSubmit);
+
+		// back button event
+		document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
+
+		// Update item event
+		document.querySelector(UISelectors.deleteBtn).addEventListener('click', itemDeleteSubmit);
 	};
 
 	// Add item submit
@@ -283,6 +309,28 @@ const AppCtrl = (function(ItemCtrl, UICtrl) {
 
 		// update UI
 		UICtrl.updateListItem(updatedItem);
+
+		// get totoal calories
+		const totalCalories = ItemCtrl.getTotalCalories();
+
+		// add total calories to UI
+		UICtrl.showTotalCalories(totalCalories);
+
+		UICtrl.clearEditState();
+
+		e.preventDefault();
+	};
+
+	// item delete submit
+	const itemDeleteSubmit = (e) => {
+		// get current item
+		const currentItem = ItemCtrl.getCurrentItem();
+
+		// delete from data structure
+		ItemCtrl.deleteItem(currentItem.id);
+
+		// delete from ui
+		UICtrl.deleteListItem(currentItem.id);
 
 		// get totoal calories
 		const totalCalories = ItemCtrl.getTotalCalories();
