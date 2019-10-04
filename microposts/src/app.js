@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', getPosts);
 // listen for add post
 document.querySelector('.post-submit').addEventListener('click', submitPost);
 
+// listen for delete
+document.querySelector('#posts').addEventListener('click', deletePost);
+
 // Get Post
 function getPosts() {
 	http.get(API_URL)
@@ -38,4 +41,23 @@ function submitPost() {
 	} else {
 		ui.showAlert("Post or Title shouldn't be empty.", 'alert alert-danger');
 	}
+}
+
+// Delete Post
+function deletePost(e) {
+	if (e.target.parentElement.classList.contains('delete')) {
+		const id = e.target.parentElement.dataset.id;
+		if (confirm('Are you sure?')) {
+			http.delete(`${API_URL}/${id}`)
+				.then((data) => {
+					ui.showAlert('Post Removed', 'alert alert-success');
+					getPosts();
+				})
+				.catch((err) => {
+					ui.showAlert('Error to post delete.', 'alert alert-danger');
+				});
+		}
+		console.log(id);
+	}
+	e.preventDefault();
 }
