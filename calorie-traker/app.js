@@ -12,9 +12,9 @@ const ItemCtrl = (function() {
 	// Data Structure / State
 	const data = {
 		items: [
-			{ id: 0, name: 'Eggs', calories: 300 },
-			{ id: 1, name: 'Chicken', calories: 500 },
-			{ id: 2, name: 'Meat', calories: 400 }
+			// { id: 0, name: 'Eggs', calories: 300 },
+			// { id: 1, name: 'Chicken', calories: 500 },
+			// { id: 2, name: 'Meat', calories: 400 }
 		],
 		currentItem: null,
 		totalCalories: 0
@@ -84,7 +84,31 @@ const UICtrl = (function() {
 				calories: document.querySelector(UISelectors.itemCalories).value.trim()
 			};
 		},
-
+		addListItem: (item) => {
+			// show the list
+			document.querySelector(UISelectors.itemList).style.display = 'block';
+			// create li element
+			const li = document.createElement('li');
+			// add class
+			li.className = 'collection-item';
+			// add id
+			li.id = `item-${item.id}`;
+			// add html
+			li.innerHTML = `
+					<strong>${item.name}: </strong> <em>${item.calories} Callories</em>
+					<a href="#" class="secondary-content">
+						<i class="edit-item fa fa-pencil"></i>
+          </a>`;
+			// insert item
+			document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li);
+		},
+		clearInput: () => {
+			document.querySelector(UISelectors.itemName).value = '';
+			document.querySelector(UISelectors.itemCalories).value = '';
+		},
+		hideList: () => {
+			document.querySelector(UISelectors.itemList).style.display = 'none';
+		},
 		getSelectors: () => {
 			return UISelectors;
 		}
@@ -112,7 +136,11 @@ const AppCtrl = (function(ItemCtrl, UICtrl) {
 			// Add Item
 			const newItem = ItemCtrl.addItem(input.name, input.calories);
 
-			console.log(newItem);
+			// Add Item to UI list
+			UICtrl.addListItem(newItem);
+
+			// clear fields
+			UICtrl.clearInput();
 		}
 
 		e.preventDefault();
@@ -126,8 +154,13 @@ const AppCtrl = (function(ItemCtrl, UICtrl) {
 			// Fetch items from data structures
 			const items = ItemCtrl.getItems();
 
-			// Populate list with items
-			UICtrl.populateItemList(items);
+			// check if any items
+			if (items.length === 0) {
+				UICtrl.hideList();
+			} else {
+				// Populate list with items
+				UICtrl.populateItemList(items);
+			}
 
 			// Load event listeners
 			loadEventListeners();
