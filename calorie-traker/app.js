@@ -25,6 +25,27 @@ const ItemCtrl = (function() {
 		getItems: () => {
 			return data.items;
 		},
+
+		addItem: (name, calories) => {
+			let ID;
+			// create ID
+			if (data.items.length > 0) {
+				ID = data.items[data.items.length - 1].id + 1;
+			} else {
+				ID = 0;
+			}
+			// calories to number
+			calories = parseInt(calories);
+
+			// Create new Item
+			newItem = new Item(ID, name, calories);
+
+			// Add to items
+			data.items.push(newItem);
+
+			return newItem;
+		},
+
 		logData: () => {
 			return data;
 		}
@@ -34,8 +55,12 @@ const ItemCtrl = (function() {
 // UI Controller
 const UICtrl = (function() {
 	const UISelectors = {
-		itemList: '#item-list'
+		itemList: '#item-list',
+		addBtn: '.add-btn',
+		itemName: '#item-name',
+		itemCalories: '#item-calories'
 	};
+
 	// Public Methods
 	return {
 		populateItemList: (items) => {
@@ -48,23 +73,64 @@ const UICtrl = (function() {
 					</a>
 				</li>`;
 			});
+
 			// insert list items
 			document.querySelector(UISelectors.itemList).innerHTML = html;
+		},
+
+		getItemInput: () => {
+			return {
+				name: document.querySelector(UISelectors.itemName).value.trim(),
+				calories: document.querySelector(UISelectors.itemCalories).value.trim()
+			};
+		},
+
+		getSelectors: () => {
+			return UISelectors;
 		}
 	};
 })();
 
 // App Controller
 const AppCtrl = (function(ItemCtrl, UICtrl) {
+	// Load Event Listeners
+	const loadEventListeners = function() {
+		const UISelectors = UICtrl.getSelectors();
+
+		// Add item event
+		document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+	};
+
+	// Add item submit
+	const itemAddSubmit = (e) => {
+		console.log('added');
+		// Get form input from UI controller
+		const input = UICtrl.getItemInput();
+
+		// check for name and calorie input
+		if (input.name !== '' && input.calories !== '') {
+			// Add Item
+			const newItem = ItemCtrl.addItem(input.name, input.calories);
+
+			console.log(newItem);
+		}
+
+		e.preventDefault();
+	};
+
 	// Public Methods
 	return {
 		init: () => {
 			console.log('Initialing app...');
+
 			// Fetch items from data structures
 			const items = ItemCtrl.getItems();
 
 			// Populate list with items
 			UICtrl.populateItemList(items);
+
+			// Load event listeners
+			loadEventListeners();
 		}
 	};
 })(ItemCtrl, UICtrl);
