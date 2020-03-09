@@ -1,0 +1,1 @@
+![ScreenShot](https://github.com/itsaiub/vanilajs-small-projects-and-design-patterns/blob/master/profile-scroller-with-generator-iterator/screenshot/profile-scroller-with-generator-iterator.png?raw=true)
